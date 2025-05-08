@@ -83,7 +83,12 @@ func InitToolsets(passedToolsets []string, readOnly bool, getClient GetClientFn,
 		)
 	// Keep experiments alive so the system doesn't error out when it's always enabled
 	experiments := toolsets.NewToolset("experiments", "Experimental features that are not considered stable yet")
-
+	gists := toolsets.NewToolset("gists", "GitHub Gists related tools").
+		AddReadTools(
+			toolsets.NewServerTool(GetGist(getClient, t)),
+			toolsets.NewServerTool(ListGists(getClient, t)),
+			toolsets.NewServerTool(ListStarredGists(getClient, t)),
+		)
 	// Add toolsets to the group
 	tsg.AddToolset(repos)
 	tsg.AddToolset(issues)
@@ -91,6 +96,7 @@ func InitToolsets(passedToolsets []string, readOnly bool, getClient GetClientFn,
 	tsg.AddToolset(pullRequests)
 	tsg.AddToolset(codeSecurity)
 	tsg.AddToolset(secretProtection)
+	tsg.AddToolset(gists)
 	tsg.AddToolset(experiments)
 	// Enable the requested features
 
